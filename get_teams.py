@@ -4,41 +4,45 @@ import os
 API_KEY = os.getenv('TBA_API_KEY')
 from get_events import get_api_data
 
-def save_team_details(team_number: str, team_details):
+def get_team_matches(team_key):        
+    team_matches = {}
     
-    updated_details = {}
+    event_keys = get_api_data(f"/team/{team_key}/events/2022/keys")
     
-    path = f'data/teams/{team_number}.json'
-    # Get current file data
-    with open(path, 'r') as file:
-        # Read the current file data. If empty, mark data as empty dict
-        try:
-            data = json.load(file)
-        except json.decoder.JSONDecodeError as e:
-            data = {}
+    for event_key in event_keys:
+        # Create empty dict in team_matches for this event
+        team_matches[event_key] = {}
+        
+        # read correspondent event file
+        path = f'data/events/{event_key}.json'.replace('2022', '')
+        with open(path, 'r') as file:
+            # Read the current file data. If there is no file (week0), skip this event 
+            try:
+                event_matches = json.load(file)
+            except json.decoder.JSONDecodeError as e:
+                continue
+            
+        # for each match in the event
+        for match_key in event_matches:
+            match = event_matches[match_key]
+            
+            # If the team was in this match, do nothing
+            if team_key in match['blue']['teams'] or team_key in match['red']['teams']:
+                team_matches[event_key][match_key] = match
+        
+    return team_matches
 
-    # Update with more data 
-    data[team_number] = updated_details
-    
-    # Write expanded data to file
-    with open(path, 'w') as file:
-        json.dump(data, file)  
-    
-teams = []
-for i in range(30):    
-    teams += get_api_data(f"/teams/2022/{i}/keys")
     
 if __name__ == "__main__":
-    for team in teams:
-        event_keys = get_api_data(f"/team/{team}/events/2022/keys")
-        print(f"Team: {team}\nEvents: {event_keys}")
-        for event_key in event_keys:
-            with open(f'./data/events/{event_key}.json', 'r') as file:
-                # All matches at that event
-                data = json.load(file)
-                
-            matches = list(filter(lambda x: team in [x['blue']['teams'] + x['red']['teams']], data.values()))
-            print(matches)
-            input()
-            
-
+    print("Getting all teams from this year...")
+    teams = []
+    for i in range(30):
+        teams += get_api_data(f"/teams/2022/{i}/keys")
+        
+    print(f"Got {len(teams)} teams")
+    
+    # For each team, get their match data by event
+    for team_key in teams:
+        team_matches = get_team_matches(team_key)
+        total_match_count = sum([len(event) for event in team_matches.values()])
+        print(f"Team {team_key} has {total_match_count} matches")
