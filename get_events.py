@@ -7,6 +7,8 @@ API_KEY = os.getenv('TBA_API_KEY')
 def save_match_details(event_id, match_id, match_details):
         
     updated_details = {
+        "post_result_time": match_details['post_result_time'],
+        "game_start_time": match_details['actual_time'],
         "blue": {
             "teams": match_details['alliances']['blue']['team_keys'],
             "score": match_details['alliances']['blue']['score']
@@ -17,6 +19,9 @@ def save_match_details(event_id, match_id, match_details):
         },  
         "result": match_details['winning_alliance']
     }
+    
+    if None in updated_details.values():
+        return
     
     path = f'data/events/{event_id}.json'
     # Get current file data
@@ -60,6 +65,7 @@ if __name__ == "__main__":
         total_matches += len(matches)
         
         for match in matches:
+
             red_teams = match['alliances']['red']['team_keys']
             blue_teams = match['alliances']['blue']['team_keys']
 
