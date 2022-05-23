@@ -81,4 +81,4 @@ for event_file in dir:
         
     # print(f"Correct Prediction: {100 * predictions['correct'] / sum(predictions.values())}%")
 
-print(f"Across: {total_matches_analyzed} matches analyzed, {100 * predictions['correct'] / sum(predictions.values())}% of predictions were correct")
+print(f"Across {total_matches_analyzed} matches analyzed, {round(100 * predictions['correct'] / sum(predictions.values()))}% of predictions were correct")

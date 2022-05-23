@@ -37,9 +37,8 @@ def average_previous_scores(team, timestamp):
 
     return sum(team_scores) / len(team_scores)
 
-path = 'data/events/'
 # For each event file, get the matches
-
+path = 'data/events/'
 dir = os.listdir(path)
 
 for event_file in dir:
@@ -56,7 +55,7 @@ for event_file in dir:
         
     # For each match in each iterated event
     for match_key in event_matches:
-
+        
         match_info = event_matches[match_key]
 
         # the blue teams and the red teams
@@ -81,4 +80,4 @@ for event_file in dir:
         
     # print(f"Correct Prediction: {100 * predictions['correct'] / sum(predictions.values())}%")
 
-print(f"Across: {total_matches_analyzed} matches analyzed, {100 * predictions['correct'] / sum(predictions.values())}% of predictions were correct")
+print(f"Across {total_matches_analyzed} matches analyzed, {round(100 * predictions['correct'] / sum(predictions.values()))}% of predictions were correct")
