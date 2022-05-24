@@ -44,7 +44,9 @@ def get_api_data(api_extension):
     data = json.loads(requests.get(f'https://www.thebluealliance.com/api/v3/{api_extension}', headers={'X-TBA-Auth-Key': API_KEY}).text)
     return data
 
+# If this file is being run and not imported to somewhere else, run the following
 if __name__ == "__main__":
+
     events = get_api_data("events/2022")
 
     total_matches = 0
