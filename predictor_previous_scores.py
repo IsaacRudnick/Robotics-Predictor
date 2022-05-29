@@ -37,47 +37,55 @@ def average_previous_scores(team, timestamp):
 
     return sum(team_scores) / len(team_scores)
 
-# For each event file, get the matches
-path = 'data/events/'
-dir = os.listdir(path)
+if __name__ == "__main__":
+    # For each event file, get the matches
+    path = 'data/events/'
+    dir = os.listdir(path)
 
-for event_file in dir:
-    print(f"Event: {event_file.replace('.json', '')} | {dir.index(event_file)+1}/{len(dir)}")
-    f = os.path.join(path, event_file)
-    # If not a file, skip this iteration
-    if not os.path.isfile(f): continue
-    with open(f, 'r') as file:
-        try: 
-            event_matches = json.load(file)
-        # If empty file (or other error), skip this iteration
-        except json.decoder.JSONDecodeError as e:
-            continue
-        
-    # For each match in each iterated event
-    for match_key in event_matches:
-        
-        match_info = event_matches[match_key]
-
-        # the blue teams and the red teams
-        blue_teams = match_info['blue']['teams']
-        red_teams = match_info['red']['teams']
-    
-        # Get the average score for each alliance in the past
-        average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])/3 
-        average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])/3
-        
-        predicted_winner = "blue" if average_blue_scores > average_red_scores else "red"
-        actual_winner = match_info["result"]
-
-        if predicted_winner == actual_winner:
-            predictions["correct"] += 1
-        elif predicted_winner != actual_winner:
-            predictions["incorrect"] += 1
+    for event_file in dir:
+        print(f"Event: {event_file.replace('.json', '')} | {dir.index(event_file)+1}/{len(dir)}")
+        f = os.path.join(path, event_file)
+        # If not a file, skip this iteration
+        if not os.path.isfile(f): continue
+        with open(f, 'r') as file:
+            try: 
+                event_matches = json.load(file)
+            # If empty file (or other error), skip this iteration
+            except json.decoder.JSONDecodeError as e:
+                continue
             
-        total_matches_analyzed += 1
+        # For each match in each iterated event
+        for match_key in event_matches:
+            
+            match_info = event_matches[match_key]
 
-        # print(f"Match: {match_key} | Predicted Winner: {predicted_winner} | Actual Winner: {actual_winner}")
+            # the blue teams and the red teams
+            blue_teams = match_info['blue']['teams']
+            red_teams = match_info['red']['teams']
         
-    # print(f"Correct Prediction: {100 * predictions['correct'] / sum(predictions.values())}%")
+            # Get the average score for each alliance in the past
+            average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])/3 
+            average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])/3
+            
+            if average_blue_scores > average_red_scores:
+                predicted_winner = "blue"
+            elif average_red_scores > average_blue_scores:
+                predicted_winner = "red"
+            # Skip if tie!
+            else: 
+                continue
+            actual_winner = match_info["result"]
 
-print(f"Across {total_matches_analyzed} matches analyzed, {round(100 * predictions['correct'] / sum(predictions.values()))}% of predictions were correct")
+            if predicted_winner == actual_winner:
+                
+                predictions["correct"] += 1
+            elif predicted_winner != actual_winner:
+                predictions["incorrect"] += 1
+                
+            total_matches_analyzed += 1
+
+            # print(f"Match: {match_key} | Predicted Winner: {predicted_winner} | Actual Winner: {actual_winner}")
+            
+        # print(f"Correct Prediction: {100 * predictions['correct'] / sum(predictions.values())}%")
+
+    print(f"Across {total_matches_analyzed} matches analyzed, {round(100 * predictions['correct'] / sum(predictions.values()), 1)}% of predictions were correct")
