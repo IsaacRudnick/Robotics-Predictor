@@ -18,18 +18,13 @@ def average_previous_scores(team, timestamp, outlier_percent):
         print("No file found for team:", team)
         return "this will cause an error; the match will be skipped"
 
-    # Skip this team if it has no matches
-    if bool([a for a in team_event_matches.values() if a == []]): 
-        print("No matches found for team:", team)
-        return "this will cause an error; the match will be skipped"
-    
     for event_key in team_event_matches:
-        path = f"data/events/{event_key.replace('2019', '')}.json"
+        path = f"data/events/{event_key.replace('2022', '')}.json"
         # Skip this event if there is no file for it
         if not os.path.isfile(path): continue
         
         try:
-            with open(f"data/events/{event_key.replace('2019', '')}.json", 'r') as event_file:
+            with open(f"data/events/{event_key.replace('2022', '')}.json", 'r') as event_file:
                 event_data = json.load(event_file)
         except:
             print(f"Error loading event file: {event_key}")
@@ -97,13 +92,13 @@ if __name__ == "__main__":
                 red_teams = match_info['red']['teams']
             
             # Get the average score for each alliance in the past
-            # try:
-            average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"], outlier_percent) for team in blue_teams])
-            average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"], outlier_percent) for team in red_teams])
-            # except: 
-            #     print("Error:", match_key)
-            #     continue
-
+            try:
+                average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])
+                average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])
+            except: 
+                print("Error:", match_key)
+                continue
+                
             if average_blue_scores > average_red_scores:
                 predicted_winner = "blue"
             elif average_red_scores > average_blue_scores:

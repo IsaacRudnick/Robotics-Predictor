@@ -17,14 +17,14 @@ def save_team_details(team_key, team_matches):
 def get_team_matches(team_key):        
     team_matches = {}
     
-    event_keys = get_api_data(f"/team/{team_key}/events/2019/keys")
+    event_keys = get_api_data(f"/team/{team_key}/events/2022/keys")
     
     for event_key in event_keys:
         # Create empty list in team_matches for this event
         team_matches[event_key] = []
         
         # read correspondent event file
-        path = f'data/events/{event_key}.json'.replace('2019', '')
+        path = f'data/events/{event_key}.json'.replace('2022', '')
         with open(path, 'r') as file:
             # Read the current file data. If there is no file (week0), skip this event 
             try:
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     print("Getting all teams from this year...")
     teams = []
     for i in range(30):
-        teams += get_api_data(f"/teams/2019/{i}/keys")
+        teams += get_api_data(f"/teams/2022/{i}/keys")
 
     print(f"Got {len(teams)} teams")
 
