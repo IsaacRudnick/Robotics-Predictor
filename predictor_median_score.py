@@ -1,7 +1,8 @@
 import json
 import os
+from statistics import median
 
-total_matches_analyzed = 1
+total_matches_analyzed = 0
 predictions = {"correct": 0, "incorrect": 0}
  
 def average_previous_scores(team, timestamp):
@@ -35,7 +36,9 @@ def average_previous_scores(team, timestamp):
             elif team in match_info['red']['teams']:
                 team_scores.append(match_info['red']['score'])
 
-    return sum(team_scores) / len(team_scores)
+
+
+    return median(team_scores)
 
 if __name__ == "__main__":
     # For each event file, get the matches
