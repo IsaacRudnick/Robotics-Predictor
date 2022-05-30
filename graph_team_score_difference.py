@@ -44,11 +44,11 @@ plt.scatter(team_avg_scores, team_high_scores, s=2)
 plt.xlabel("Average Score")
 plt.ylabel("Highest Score")
 # plot y=1.987x + 0
-# plt.plot(team_avg_scores, [1.987 * x + 0 for x in team_avg_scores], "r-")
+plt.plot(team_avg_scores, [1.987 * x + 0 for x in team_avg_scores], "r-")
 
-# Choose one of these to 
-# plt.plot(team_avg_scores, [1 * x + 0 for x in team_avg_scores], "g-")
-ax.set_aspect('equal')
+# Choose one of these two
+plt.plot(team_avg_scores, [1 * x + 0 for x in team_avg_scores], "g-")
+# ax.set_aspect('equal')
 
 plt.xlim(-10, max(team_high_scores)*1.2)
 plt.ylim(-10, max(team_high_scores)*1.2)
