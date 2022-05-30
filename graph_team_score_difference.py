@@ -1,7 +1,7 @@
 import json
 import os
-from predictor_highest_score import highest_previous_score
-from predictor_previous_scores import average_previous_scores
+from predictor_HPS import highest_previous_score
+from predictor_AMPS import average_previous_scores
 import matplotlib.pyplot as plt
 
 # For calculating weighted avg
@@ -44,7 +44,7 @@ plt.scatter(team_avg_scores, team_high_scores, s=2)
 plt.xlabel("Average Score")
 plt.ylabel("Highest Score")
 # plot y=1.987x + 0
-plt.plot(team_avg_scores, [1.987 * x + 0 for x in team_avg_scores], "r-")
+# plt.plot(team_avg_scores, [1.987 * x + 0 for x in team_avg_scores], "r-")
 
 # Choose one of these to 
 # plt.plot(team_avg_scores, [1 * x + 0 for x in team_avg_scores], "g-")

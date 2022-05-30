@@ -1,24 +1,26 @@
 import json
 import os
-from statistics import median
 
-total_matches_analyzed = 0
+total_matches_analyzed = 1
 predictions = {"correct": 0, "incorrect": 0}
  
 def average_previous_scores(team, timestamp):
     team_scores = []
     
     # Get all the matches for the team
-    
-    with open(f'data/teams/{team}.json', 'r') as team_file:
-        team_event_matches = json.load(team_file)
+    try: 
+        with open(f'data/teams/{team}.json', 'r') as team_file:
+            team_event_matches = json.load(team_file)
+    except FileNotFoundError: 
+        print("No file found for team:", team)
+        return "this will cause an error; the match will be skipped"
 
     for event_key in team_event_matches:
-        path = f"data/events/{event_key.replace('2022', '')}.json"
+        path = f"data/events/{event_key.replace('2019', '')}.json"
         # Skip this event if there is no file for it
         if not os.path.isfile(path): continue
         
-        with open(f"data/events/{event_key.replace('2022', '')}.json", 'r') as event_file:
+        with open(f"data/events/{event_key.replace('2019', '')}.json", 'r') as event_file:
             try:
                 event_data = json.load(event_file)
             except json.decoder.JSONDecodeError as e:
@@ -36,9 +38,7 @@ def average_previous_scores(team, timestamp):
             elif team in match_info['red']['teams']:
                 team_scores.append(match_info['red']['score'])
 
-
-
-    return median(team_scores)
+    return sum(team_scores) / len(team_scores)
 
 if __name__ == "__main__":
     # For each event file, get the matches
@@ -67,8 +67,11 @@ if __name__ == "__main__":
             red_teams = match_info['red']['teams']
         
             # Get the average score for each alliance in the past
-            average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])/3 
-            average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])/3
+            try:
+                average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])
+                average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])
+            except: 
+                continue
             
             if average_blue_scores > average_red_scores:
                 predicted_winner = "blue"

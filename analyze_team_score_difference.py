@@ -1,7 +1,7 @@
 import json
 import os
-from predictor_highest_score import highest_previous_score
-from predictor_previous_scores import average_previous_scores
+from predictor_HPS import highest_previous_score
+from predictor_AMPS import average_previous_scores
 
 # For calculating weighted avg
 # [number, average]
