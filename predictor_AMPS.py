@@ -16,11 +16,11 @@ def average_previous_scores(team, timestamp):
         return "this will cause an error; the match will be skipped"
 
     for event_key in team_event_matches:
-        path = f"data/events/{event_key.replace('2022', '')}.json"
+        path = f"data/events/{event_key.replace('2019', '')}.json"
         # Skip this event if there is no file for it
         if not os.path.isfile(path): continue
         
-        with open(f"data/events/{event_key.replace('2022', '')}.json", 'r') as event_file:
+        with open(f"data/events/{event_key.replace('2019', '')}.json", 'r') as event_file:
             try:
                 event_data = json.load(event_file)
             except json.decoder.JSONDecodeError as e:
