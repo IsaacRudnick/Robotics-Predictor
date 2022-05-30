@@ -9,9 +9,12 @@ def average_previous_scores(team, timestamp):
     team_scores = []
     
     # Get all the matches for the team
-    
-    with open(f'data/teams/{team}.json', 'r') as team_file:
-        team_event_matches = json.load(team_file)
+    try:
+        with open(f'data/teams/{team}.json', 'r') as team_file:
+            team_event_matches = json.load(team_file)
+    except: 
+        print(f"No data for {team}")
+        return "This will cause an error and skip the match"
 
     for event_key in team_event_matches:
         path = f"data/events/{event_key.replace('2019', '')}.json"
@@ -67,8 +70,11 @@ if __name__ == "__main__":
             red_teams = match_info['red']['teams']
         
             # Get the average score for each alliance in the past
-            average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])/3 
-            average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])/3
+            try:
+                average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])/3 
+                average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])/3
+            except: 
+                continue
             
             if average_blue_scores > average_red_scores:
                 predicted_winner = "blue"

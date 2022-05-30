@@ -7,10 +7,7 @@ def average_previous_scores(team, timestamp, outlier_percent):
     # divide by 100 to get outlier_percent as a decimal
     outlier_percent /= 100 
     
-    team_scores = []
-    
-    # Get all the matches for the team
-    
+    team_scores = []    
     try: 
         with open(f'data/teams/{team}.json', 'r') as team_file:
             team_event_matches = json.load(team_file)
@@ -19,17 +16,17 @@ def average_previous_scores(team, timestamp, outlier_percent):
         return "this will cause an error; the match will be skipped"
 
     for event_key in team_event_matches:
+            
         path = f"data/events/{event_key.replace('2019', '')}.json"
         # Skip this event if there is no file for it
         if not os.path.isfile(path): continue
-        
+                
         try:
             with open(f"data/events/{event_key.replace('2019', '')}.json", 'r') as event_file:
                 event_data = json.load(event_file)
         except:
-            print(f"Error loading event file: {event_key}")
             continue
-                
+                        
         for match_key in event_data:
             
             match_info = event_data[match_key]
@@ -56,7 +53,7 @@ def average_previous_scores(team, timestamp, outlier_percent):
  
 if __name__ == "__main__":
     
-    outlier_percents = list(range(0, 210, 10))
+    outlier_percents = list(range(0, 205, 5))
     respective_correct_percents = []
     
     for outlier_percent in outlier_percents:
@@ -92,12 +89,12 @@ if __name__ == "__main__":
                 red_teams = match_info['red']['teams']
             
             # Get the average score for each alliance in the past
-            try:
-                average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in blue_teams])
-                average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"]) for team in red_teams])
-            except: 
-                print("Error:", match_key)
-                continue
+            # try:
+            average_blue_scores = sum([average_previous_scores(team, match_info["game_start_time"], outlier_percent) for team in blue_teams])
+            average_red_scores = sum([average_previous_scores(team, match_info["game_start_time"], outlier_percent) for team in red_teams])
+            # except: 
+            #     print("Error:", match_key)
+            #     continue
                 
             if average_blue_scores > average_red_scores:
                 predicted_winner = "blue"
