@@ -47,7 +47,7 @@ def get_api_data(api_extension):
 # If this file is being run and not imported to somewhere else, run the following
 if __name__ == "__main__":
 
-    events = get_api_data("events/2019")
+    events = get_api_data("events/2022")
 
     total_matches = 0
     for count, event in enumerate(events):
